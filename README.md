@@ -18,5 +18,7 @@ This control peripheral (CP) will send command to the ESP32 that will do several
 This NID is just an hex value.
 
 ### 2. If the NID does't match its NID, the MRBR search in its routing table to matching routeur for this NID
-The MRBR work mostely like a LAN Network but with the I2C and UART protocols
+The MRBR work mostely like a LAN Network but with the I2C and UART protocols. Every router of the project (MRBR or MRSR) have their own I2C "Network". The MRBR and the MRSR communicate via UART together.
 
+### 3. The command is forwarded to the right router that will deliver the command to the Peripheral Controler (PCtrl) matching the I2C address included in the header.
+The MRBR command is illustrated in the next picture.
