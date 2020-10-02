@@ -1,0 +1,23 @@
+{
+  "MRBR_NID":0x00,
+  "ROUTING_TABLE":{
+    "MRBR":{
+      "slave1":{
+        "SID":0x00,
+        "NAME":"Dummy slave"
+      }
+    },
+    "MRSR_S1":{
+      "slave1":{
+        "SID":0x00,
+        "NAME":"Dummy slave"
+      }
+    },
+    "MRSR_S2":{
+      "slave1":{
+        "SID":0x00,
+        "NAME":"Dummy slave"
+      }
+    }
+  }
+}
