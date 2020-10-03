@@ -3,7 +3,7 @@
 ## Why this project?
 I recently started this project in order to control my old Marklin Model Railroad (M tracks) or, at least, some parts of it (such as the switch tracks, some parts of the diorama, crossing, etc).
 
-This project is inspired of the URB project (https://arduinorailwaycontrol.com/) that I will not explain here, go check the website this project is super cool.
+This project is inspired of the URB project (https://arduinorailwaycontrol.com/) that I will not explain here, go check this website, the project is super cool.
 
 I wanted to create a similar concept that Mr Massiker (Founder of URB) did but with my point of view and that's what I did.
 
