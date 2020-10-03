@@ -23,4 +23,4 @@ The MRBR work mostely like a LAN Network but with the I2C and UART protocols. Ev
 ### 3. The command is forwarded to the right router that will deliver the command to the Peripheral Controler (PCtrl) matching the I2C address (SID) included in the header.
 The MRBR command frame is illustrated in the next picture.
 
-                                                                ![Typical MRBR I2C frame](MRBR_frame.png)
+![Typical MRBR I2C frame](MRBR_frame.png)
