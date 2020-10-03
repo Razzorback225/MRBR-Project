@@ -12,15 +12,24 @@ For now, it is nothing else than an idea (and some schematics, PCB files and a b
 
 The idea is to have an ESP32 that will communicate Wirelessly or Wiredly (I'm not sure these words exist in English) with a control device (Smartphone, PC, ...).
 
-This control peripheral (CP) will send command to the ESP32 that will do several thing with it.
+This control peripheral (CP) will send command to the ESP32 that will do several thing with it:
 
-### 1. Check the Network ID (NID) included in the header of the command
-This NID is just an hex value.
+First, the MRBR checks the Network ID (NID) included in the header of the command.
+Then it will deal with it following 2 cases :
 
-### 2. If the NID from the command doesn't match its NID, the MRBR search in its routing table to matching routeur for this NID
-The MRBR work mostely like a LAN Network but with the I2C and UART protocols. Every router of the project (MRBR or MRSR) have their own I2C "Network". The MRBR and the MRSR communicate via UART together.
+##### * Case A : The NID from the command doesn't match the NID of the MRBR
+1. The MRBR will search in its routing table to find a matching router for this NID.
+2. The command will then be forwarded to the right router that will deliver the command to the Peripheral Controler (PCtrl) matching the I2C address (DID) included in the header.
 
-### 3. The command is forwarded to the right router that will deliver the command to the Peripheral Controler (PCtrl) matching the I2C address (SID) included in the header.
+#### * Case B : The NID from the command match with the NID of the MRBR
+The command will then be forwarded to the right PCtrl matching the DID included in the header.
+
+These NID and DID are just some hex value (typically a byte) such as the command.
+
+The MRBR works mostely like a LAN Network but with the I2C and UART protocols. Every router of the project (MRBR or MRSR) have their own I2C "Network"(see diagram below). The MRBR and the MRSR communicate via UART together. And each router communicate with its network using I2C protocol.
+
+![Block diagram of the project](block_diagram.png)
+
 The MRBR command frame is illustrated in the next picture.
 
 ![Typical MRBR I2C frame](MRBR_frame.png)
