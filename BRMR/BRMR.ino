@@ -113,15 +113,12 @@ void ComTask (void * pvParameters){
         };
 
         Routes MRBR;
-        Routes MRSR_S1;
-        Routes MRSR_S2;
-        
+
         //Print Routing Table
         File routeF = SPIFFS.open("/route.json", "r");
-        
-        
-        StaticJsonDocument<1024> routeJ;
 
+        StaticJsonDocument<1024> routeJ;
+                
         DeserializationError error = deserializeJson(routeJ, routeF);
         if(error)
         {
@@ -130,12 +127,6 @@ void ComTask (void * pvParameters){
         }
         else
         {
-            MRBR.NID= routeJ["MRBR"]["MRBR_NID"];
-            MRBR.interface = routeJ["MRBR"]["Interface"];
-            Slave slave1;
-            slave1.DID = routeJ["MRBR"]["slaves"][0]["DID"];
-            slave1.Name = routeJ["MRBR"]["slaves"][0]["Name"];
-            MRBR.slave[0] = slave1;
             int d1, d2, i1, i2;
             
             Serial.println("___________________________________");
@@ -143,35 +134,51 @@ void ComTask (void * pvParameters){
             Serial.println("|---------------------------------|");
             Serial.println("|     DID    |       NAME         |");
             Serial.println("|------------|--------------------|");
-            Serial.print  ("|    ");Serial.print("0x");
-            if(MRBR.slave[0].DID < 10)
-            {
-              Serial.print("0");
-            }
-            Serial.print(MRBR.slave[0].DID, HEX);
-            Serial.print("    |");
-            if(strlen(MRBR.slave[0].Name)%2 == 0)
-            {
-              int delta = 20 - strlen(MRBR.slave[0].Name);
-              d1, d2 = delta/2;
-            }
-            else{
-              int delta = 20 - strlen(MRBR.slave[0].Name);
-              d1 = delta/2;
-              d2 = d1 + 1;
-            }
-            for(i1=0; i1<d1; i1++)
-            {
-              Serial.print(" ");
-            }
-            Serial.print(MRBR.slave[0].Name);
-            for(i2=0; i2<d2; i2++)
-            {
-              Serial.print(" ");
-            }
-            Serial.println("|");
-            Serial.println("|------------|--------------------|");
 
+            MRBR.NID = routeJ["MRBR"][0]["MRBR_NID"];
+            MRBR.interface = routeJ["MRBR"][0]["Interface"];
+            
+            for(int slaveInd = 0; slaveInd < routeJ["MRBR"][0]["slaves"].size(); slaveInd++)
+            {
+                Slave slave;
+                slave.DID = routeJ["MRBR"][0]["slaves"][slaveInd]["DID"];
+                slave.Name = routeJ["MRBR"][0]["slaves"][slaveInd]["NAME"];
+                //Serial.print("DID: ");Serial.print(slave.DID, HEX);Serial.print(" ");Serial.print("Name: ");Serial.println(slave.Name);
+                MRBR.slave[slaveInd] = slave;
+
+                Serial.print  ("|    ");Serial.print("0x");
+                if(MRBR.slave[slaveInd].DID < 10)
+                {
+                  Serial.print("0");
+                }
+                Serial.print(MRBR.slave[slaveInd].DID, HEX);
+                Serial.print("    |");
+                if(strlen(MRBR.slave[slaveInd].Name)%2 == 0)
+                {
+                  int delta = 20 - strlen(MRBR.slave[slaveInd].Name);
+                  d1, d2 = delta/2;
+                }
+                else{
+                  int delta = 20 - strlen(MRBR.slave[slaveInd].Name);
+                  d1 = delta/2;
+                  d2 = d1 + 1;
+                }
+                
+                for(i1=0; i1<d1; i1++)
+                {
+                  Serial.print(" ");
+                }
+    
+                Serial.print(MRBR.slave[slaveInd].Name);
+    
+                for(i2=0; i2<d2; i2++)
+                {
+                  Serial.print(" ");
+                }
+                Serial.println("|");
+                Serial.println("|------------|--------------------|");
+                
+            }
             routeF.close();
         }
       }

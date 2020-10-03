@@ -1,32 +1,46 @@
 {
-  "MRBR":{
-    "MRBR_NID":0x00,
-    "Interface":"/",
-    "slaves":{
-      "slave1":{
-        "DID":0x02,
-        "NAME":"Dummy slave"
-      }
+  "MRBR":[
+    {
+      "MRBR_NID":0,
+      "Interface":"L0",
+      "slaves":[
+        {
+          "DID":2,
+          "NAME":"Dummy slave"
+        },
+        {
+          "DID":3,
+          "NAME":"Dummy slave"
+        },
+        {
+          "DID":4,
+          "NAME":"Dummy slave"
+        }
+      ]
     }
-  },
-  "MRSR_S1":{
-    "MRSR_S1_NID":0x10,
-    "Interface":"S1",
-    "slaves":{
-      "slave1":{
-        "DID":0x02,
-        "NAME":"Dummy slave"
-      }
+  ],
+  "MRSR_S1":[
+    {
+      "MRBR_NID":16,
+      "Interface":"S1",
+      "slaves":[
+        {
+          "DID":2,
+          "NAME":"Dummy slave"
+        }
+      ]
     }
-  },
-  "MRSR_S2":{
-    "MRSR_S2_NID":0x20,
-    "Interface":"S2",
-    "slaves":{
-      "slave1":{
-        "DID":0x02,
-        "NAME":"Dummy slave"
-      }
+  ],
+  "MRSR_S2":[
+    {
+      "MRBR_NID":32,
+      "Interface":"S2",
+      "slaves":[
+        {
+          "DID":2,
+          "NAME":"Dummy slave"
+        }
+      ]
     }
-  }
+  ]
 }
