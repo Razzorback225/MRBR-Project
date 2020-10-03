@@ -5,6 +5,7 @@
 
 #define RTR_ADD 0x01
 #define bt_led 2
+#define DEVICE_TYPE "MRBR"
 
 #define STANDBY 1
 #define CONNECTED 2
@@ -13,9 +14,6 @@
 TaskHandle_t ComCtrl;
 //IO task
 TaskHandle_t IoCtrl;
-
-byte deviceAdd = 0x9;
-String deviceName = "Dummy slave";
 
 BluetoothSerial BT;
 
@@ -84,15 +82,6 @@ void ComTask (void * pvParameters){
     Serial.println("E/FS/M#");
   }
 
-  File config = SPIFFS.open("/config.json", FILE_READ);
-
-  if(!config){
-    Serial.println("E/FS/FM#");
-    return;
-  }
-
-  config.close();
-
   while(true){
     if(Serial.available()>0)
     {
@@ -113,41 +102,78 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
-        int d1, d2, i1, i2;
+        struct Slave{
+          byte DID;
+          const char* Name;
+        };
+        struct Routes {
+          byte NID;
+          const char* interface;
+          Slave slave[];
+        };
+
+        Routes MRBR;
+        Routes MRSR_S1;
+        Routes MRSR_S2;
         
-        Serial.println("___________________________________");
-        Serial.println("|           MRBR NETWORK          |");
-        Serial.println("|---------------------------------|");
-        Serial.println("|     DID    |       NAME         |");
-        Serial.println("|------------|--------------------|");
-        Serial.print  ("|    ");Serial.print("0x");
-        if(deviceAdd < 10)
+        //Print Routing Table
+        File routeF = SPIFFS.open("/route.json", "r");
+        
+        
+        StaticJsonDocument<1024> routeJ;
+
+        DeserializationError error = deserializeJson(routeJ, routeF);
+        if(error)
         {
-          Serial.print("0");
+            Serial.println("Failed to load JSON");
+            Serial.print("Error: ");Serial.println(error.c_str());
         }
-        Serial.print(deviceAdd, HEX);
-        Serial.print("    |");
-        if(deviceName.length()%2 == 0)
+        else
         {
-          int delta = 20 - deviceName.length();
-          d1, d2 = delta/2;
+            MRBR.NID= routeJ["MRBR"]["MRBR_NID"];
+            MRBR.interface = routeJ["MRBR"]["Interface"];
+            Slave slave1;
+            slave1.DID = routeJ["MRBR"]["slaves"][0]["DID"];
+            slave1.Name = routeJ["MRBR"]["slaves"][0]["Name"];
+            MRBR.slave[0] = slave1;
+            int d1, d2, i1, i2;
+            
+            Serial.println("___________________________________");
+            Serial.println("|           MRBR NETWORK          |");
+            Serial.println("|---------------------------------|");
+            Serial.println("|     DID    |       NAME         |");
+            Serial.println("|------------|--------------------|");
+            Serial.print  ("|    ");Serial.print("0x");
+            if(MRBR.slave[0].DID < 10)
+            {
+              Serial.print("0");
+            }
+            Serial.print(MRBR.slave[0].DID, HEX);
+            Serial.print("    |");
+            if(strlen(MRBR.slave[0].Name)%2 == 0)
+            {
+              int delta = 20 - strlen(MRBR.slave[0].Name);
+              d1, d2 = delta/2;
+            }
+            else{
+              int delta = 20 - strlen(MRBR.slave[0].Name);
+              d1 = delta/2;
+              d2 = d1 + 1;
+            }
+            for(i1=0; i1<d1; i1++)
+            {
+              Serial.print(" ");
+            }
+            Serial.print(MRBR.slave[0].Name);
+            for(i2=0; i2<d2; i2++)
+            {
+              Serial.print(" ");
+            }
+            Serial.println("|");
+            Serial.println("|------------|--------------------|");
+
+            routeF.close();
         }
-        else{
-          int delta = 20 - deviceName.length();
-          d1 = delta/2;
-          d2 = d1 + 1;
-        }
-        for(i1=0; i1<d1; i1++)
-        {
-          Serial.print(" ");
-        }
-        Serial.print(deviceName);
-        for(i2=0; i2<d2; i2++)
-        {
-          Serial.print(" ");
-        }
-        Serial.println("|");
-        Serial.println("|------------|--------------------|");
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
