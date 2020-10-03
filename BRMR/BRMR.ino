@@ -19,6 +19,16 @@ BluetoothSerial BT;
 
 int btState;
 
+struct Slave{
+  byte DID;
+  const char* Name;
+};
+struct Routes {
+  byte NID;
+  const char* interface;
+  Slave slave[];
+};
+
 void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
   switch(event)
   {
@@ -29,6 +39,72 @@ void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
       btState = STANDBY;
       break;
   }
+}
+
+void loadRoute(Routes route, String Network)
+{
+    int d1, d2, i1, i2;
+      //Print Routing Table
+    File routeF = SPIFFS.open("/route.json", "r");
+
+    StaticJsonDocument<1024> routeJ;
+            
+    DeserializationError error = deserializeJson(routeJ, routeF);
+    if(error)
+    {
+        Serial.println("Failed to load JSON");
+        Serial.print("Error: ");Serial.println(error.c_str());
+    }
+    else
+    {
+
+      route.NID = routeJ[Network]["MRBR_NID"];
+      route.interface = routeJ[Network]["Interface"];
+  
+      for(int slaveInd = 0; slaveInd < routeJ[Network]["slaves"].size(); slaveInd++)
+      {
+          Slave slave;
+          slave.DID = routeJ[Network]["slaves"][slaveInd]["DID"];
+          slave.Name = routeJ[Network]["slaves"][slaveInd]["NAME"];
+          route.slave[slaveInd] = slave;
+          Serial.println("|------------|--------------------|------------|");      
+          Serial.print  ("|    ");Serial.print("0x");
+          if(route.slave[slaveInd].DID < 10)
+          {
+            Serial.print("0");
+          }
+          Serial.print(route.slave[slaveInd].DID, HEX);
+          Serial.print("    |");
+          if(strlen(route.slave[slaveInd].Name)%2 == 0)
+          {
+            int delta = 20 - strlen(route.slave[slaveInd].Name);
+            d1, d2 = delta/2;
+          }
+          else{
+            int delta = 20 - strlen(route.slave[slaveInd].Name);
+            d1 = delta/2;
+            d2 = d1 + 1;
+          }
+          
+          for(i1=0; i1<d1; i1++)
+          {
+            Serial.print(" ");
+          }
+  
+          Serial.print(route.slave[slaveInd].Name);
+  
+          for(i2=0; i2<d2; i2++)
+          {
+            Serial.print(" ");
+          }
+          Serial.print("|");
+          Serial.print("     ");Serial.print(route.interface);Serial.println("     |");       
+  
+      }
+      Serial.println("________________________________________________");
+             
+      routeF.close();
+    }
 }
 
 void setup() {
@@ -85,7 +161,6 @@ void ComTask (void * pvParameters){
   while(true){
     if(Serial.available()>0)
     {
-      //Serial.println(Serial.readString());
 
       String cmd = Serial.readStringUntil('#');
 
@@ -102,85 +177,28 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
-        struct Slave{
-          byte DID;
-          const char* Name;
-        };
-        struct Routes {
-          byte NID;
-          const char* interface;
-          Slave slave[];
-        };
-
         Routes MRBR;
+        Routes MRSR_S1;
+        Routes MRSR_S2;
 
-        //Print Routing Table
-        File routeF = SPIFFS.open("/route.json", "r");
-
-        StaticJsonDocument<1024> routeJ;
-                
-        DeserializationError error = deserializeJson(routeJ, routeF);
-        if(error)
-        {
-            Serial.println("Failed to load JSON");
-            Serial.print("Error: ");Serial.println(error.c_str());
-        }
-        else
-        {
-            int d1, d2, i1, i2;
-            
-            Serial.println("___________________________________");
-            Serial.println("|           MRBR NETWORK          |");
-            Serial.println("|---------------------------------|");
-            Serial.println("|     DID    |       NAME         |");
-            Serial.println("|------------|--------------------|");
-
-            MRBR.NID = routeJ["MRBR"][0]["MRBR_NID"];
-            MRBR.interface = routeJ["MRBR"][0]["Interface"];
-            
-            for(int slaveInd = 0; slaveInd < routeJ["MRBR"][0]["slaves"].size(); slaveInd++)
-            {
-                Slave slave;
-                slave.DID = routeJ["MRBR"][0]["slaves"][slaveInd]["DID"];
-                slave.Name = routeJ["MRBR"][0]["slaves"][slaveInd]["NAME"];
-                //Serial.print("DID: ");Serial.print(slave.DID, HEX);Serial.print(" ");Serial.print("Name: ");Serial.println(slave.Name);
-                MRBR.slave[slaveInd] = slave;
-
-                Serial.print  ("|    ");Serial.print("0x");
-                if(MRBR.slave[slaveInd].DID < 10)
-                {
-                  Serial.print("0");
-                }
-                Serial.print(MRBR.slave[slaveInd].DID, HEX);
-                Serial.print("    |");
-                if(strlen(MRBR.slave[slaveInd].Name)%2 == 0)
-                {
-                  int delta = 20 - strlen(MRBR.slave[slaveInd].Name);
-                  d1, d2 = delta/2;
-                }
-                else{
-                  int delta = 20 - strlen(MRBR.slave[slaveInd].Name);
-                  d1 = delta/2;
-                  d2 = d1 + 1;
-                }
-                
-                for(i1=0; i1<d1; i1++)
-                {
-                  Serial.print(" ");
-                }
-    
-                Serial.print(MRBR.slave[slaveInd].Name);
-    
-                for(i2=0; i2<d2; i2++)
-                {
-                  Serial.print(" ");
-                }
-                Serial.println("|");
-                Serial.println("|------------|--------------------|");
-                
-            }
-            routeF.close();
-        }
+        Serial.println("________________________________________________");
+        Serial.println("|                 MRBR NETWORK                 |");
+        Serial.println("|----------------------------------------------|");
+        Serial.println("|     DID    |       NAME         |  MRBR INT  |");
+        loadRoute(MRBR, "MRBR");
+  
+        Serial.println("________________________________________________");
+        Serial.println("|                 MRSR_S1 NETWORK              |");
+        Serial.println("|----------------------------------------------|");
+        Serial.println("|     DID    |       NAME         |  MRBR INT  |");
+        loadRoute(MRSR_S1, "MRSR_S1");
+        
+        Serial.println("________________________________________________");
+        Serial.println("|                 MRSR_S2 NETWORK              |");
+        Serial.println("|----------------------------------------------|");
+        Serial.println("|     DID    |       NAME         |  MRBR INT  |");           
+        loadRoute(MRSR_S2, "MRSR_S2");     
+                   
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
@@ -197,30 +215,7 @@ void ComTask (void * pvParameters){
       //Serial.println(Serial.readString());
 
       String cmd = BT.readStringUntil('#');
-
-      //If the string received is a user command
-      if(cmd == "help" || cmd == "-h")
-      {
-        BT.println("# ////COMMAND LIST\\\\");
-        BT.println("# show {parameter} : Will shows informations");
-        BT.println("#       parameters:\n#");
-        BT.println("#       route [-r] : Will displays all the existing route included in the config.json file");
-        BT.println("#       address [-a] : Will displays the current I2C address of the MRBR");
-        BT.println("#");
-        BT.println("# help [-h] : Will shows this help message");
-      }
-      else if(cmd == "show route" || cmd == "show -r")
-      {
-
-      }
-      else if(cmd == "show address" || cmd == "show -a")
-      {
-
-      }
-      else
-      {
-        BT.println(cmd);
-      }
+      
     }
     delay(2);
   }
