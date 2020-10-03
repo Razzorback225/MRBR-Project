@@ -31,7 +31,7 @@ void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
 }
 
 void setup() {
-  
+
   xTaskCreatePinnedToCore(ComTask, "Bluetooth", 10000, NULL, 1, &ComCtrl,0);
   delay(500);
   xTaskCreatePinnedToCore(IoTask, "IO", 10000, NULL, 1, &IoCtrl,1);
@@ -52,7 +52,7 @@ void IoTask (void * pvParameters){
         break;
       case CONNECTED:
         digitalWrite(bt_led, HIGH);
-        break;        
+        break;
     }
   }
 }
@@ -66,13 +66,13 @@ void IoTask (void * pvParameters){
 //to find to which UART the command has to be send
 //
 void ComTask (void * pvParameters){
- 
+
   BT.begin("MRBR");
   BT.register_callback(bt_callback);
   pinMode(bt_led, OUTPUT);
 
   btState = STANDBY;
-  
+
   Serial.begin(115200);
   //Serial1.begin(115200);
   //Serial2.begin(115200);
@@ -87,16 +87,16 @@ void ComTask (void * pvParameters){
     Serial.println("E/FS/FM#");
     return;
   }
-  
+
   config.close();
-  
+
   while(true){
     if(Serial.available()>0)
     {
       //Serial.println(Serial.readString());
-      
+
       String cmd = Serial.readStringUntil('#');
-      
+
       //If the string received is a user command
       if(cmd == "help" || cmd == "-h")
       {
@@ -129,9 +129,9 @@ void ComTask (void * pvParameters){
     else if(BT.available()>0)
     {
       //Serial.println(Serial.readString());
-      
+
       String cmd = BT.readStringUntil('#');
-      
+
       //If the string received is a user command
       if(cmd == "help" || cmd == "-h")
       {
@@ -145,11 +145,11 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
-        
+
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
-        
+
       }
       else
       {
