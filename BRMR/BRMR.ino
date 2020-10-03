@@ -113,7 +113,7 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
-        int d1, d2;
+        int d1, d2, i1, i2;
         
         Serial.println("___________________________________");
         Serial.println("|           MRBR NETWORK          |");
@@ -137,17 +137,17 @@ void ComTask (void * pvParameters){
           d1 = delta/2;
           d2 = d1 + 1;
         }
-
-        for(int i=0; i<d1; i++);
+        for(i1=0; i1<d1; i1++)
         {
           Serial.print(" ");
         }
         Serial.print(deviceName);
-        for(int i=0; i<d2; i++);
+        for(i2=0; i2<d2; i2++)
         {
           Serial.print(" ");
         }
         Serial.println("|");
+        Serial.println("|------------|--------------------|");
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
