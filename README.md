@@ -33,3 +33,13 @@ The MRBR works mostely like a LAN Network but with the I2C and UART protocols. E
 The MRBR command frame is illustrated in the next picture.
 
 ![Typical MRBR I2C frame](MRBR_frame.png)
+
+To achieve this I use the 2 cores of the ESP32-WROOM32D as the Core \#0 handles the IO peripherals and the Core \#1 handles the communications (Bluetooth, UART, I2C).
+
+## Current status of the Project
+For now, at the time of writing these lines, I'm finishing the design of the V1 for both MRBR and MRSR.
+I've hope to test them maybe next month (after a bit of soldering process).
+
+About the code, I started to work on it but didn't have much time to work on it. It is, however, available in the dev branch of this repository. Have fun!
+
+# This project is completely Open Source so don't hesitate to participate to the code part and to give me your feedback about the schematics. :D
