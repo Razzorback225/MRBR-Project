@@ -17,11 +17,11 @@ This control peripheral (CP) will send command to the ESP32 that will do several
 First, the MRBR checks the Network ID (NID) included in the header of the command.
 Then it will deal with it following 2 cases :
 
-#####* Case A : The NID from the command doesn't match the NID of the MRBR
+##### Case A : The NID from the command doesn't match the NID of the MRBR
 1. The MRBR will search in its routing table to find a matching router for this NID.
 2. The command will then be forwarded to the right router that will deliver the command to the Peripheral Controler (PCtrl) matching the I2C address (DID) included in the header.
 
-#####* Case B : The NID from the command match with the NID of the MRBR
+##### Case B : The NID from the command match with the NID of the MRBR
 The command will then be forwarded to the right PCtrl matching the DID included in the header.
 
 These NID and DID are just some hex value (typically a byte) such as the command.
