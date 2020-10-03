@@ -1,6 +1,7 @@
 {
   "MRBR":{
     "MRBR_NID":0x00,
+    "Interface":0,
     "slave1":{
       "DID":0x00,
       "NAME":"Dummy slave"
@@ -8,6 +9,7 @@
   },
   "MRSR_S1":{
     "MRSR_S1_NID":0x10,
+    "Interface":"S1",
     "slave1":{
       "DID":0x00,
       "NAME":"Dummy slave"
@@ -15,6 +17,7 @@
   },
   "MRSR_S2":{
     "MRSR_S2_NID":0x20,
+    "Interface":"S2",
     "slave1":{
       "DID":0x00,
       "NAME":"Dummy slave"

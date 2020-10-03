@@ -3,7 +3,7 @@
 #include "SPIFFS.h"
 #include <ArduinoJson.h>
 
-#define RTR_ADD 0x80
+#define RTR_ADD 0x01
 #define bt_led 2
 
 #define STANDBY 1
@@ -13,6 +13,9 @@
 TaskHandle_t ComCtrl;
 //IO task
 TaskHandle_t IoCtrl;
+
+byte deviceAdd = 0x9;
+String deviceName = "Dummy slave";
 
 BluetoothSerial BT;
 
@@ -110,11 +113,41 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
+        int d1, d2;
+        
         Serial.println("___________________________________");
         Serial.println("|           MRBR NETWORK          |");
         Serial.println("|---------------------------------|");
-        Serial.println("|     ROUTER    |   NID   |  INT  |");
-        Serial.println("|---------------------------------|");
+        Serial.println("|     DID    |       NAME         |");
+        Serial.println("|------------|--------------------|");
+        Serial.print  ("|    ");Serial.print("0x");
+        if(deviceAdd < 10)
+        {
+          Serial.print("0");
+        }
+        Serial.print(deviceAdd, HEX);
+        Serial.print("    |");
+        if(deviceName.length()%2 == 0)
+        {
+          int delta = 20 - deviceName.length();
+          d1, d2 = delta/2;
+        }
+        else{
+          int delta = 20 - deviceName.length();
+          d1 = delta/2;
+          d2 = d1 + 1;
+        }
+
+        for(int i=0; i<d1; i++);
+        {
+          Serial.print(" ");
+        }
+        Serial.print(deviceName);
+        for(int i=0; i<d2; i++);
+        {
+          Serial.print(" ");
+        }
+        Serial.println("|");
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
