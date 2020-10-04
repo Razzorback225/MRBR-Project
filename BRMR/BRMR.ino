@@ -26,8 +26,13 @@ struct Slave{
 struct Routes {
   byte NID;
   const char* interface;
-  Slave slave[];
+  Slave slave[127];
+  int slaveCount;
 };
+
+Routes MRBR;
+Routes MRSR_S1;
+Routes MRSR_S2;
 
 void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
   switch(event)
@@ -41,15 +46,14 @@ void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
   }
 }
 
-void loadRoute(Routes route, String Network)
+void loadRoute(String Network)
 {
-    int d1, d2, i1, i2;
       //Print Routing Table
-    File routeF = SPIFFS.open("/route.json", "r");
+    File routeFile = SPIFFS.open("/route.json", "r");
 
-    StaticJsonDocument<1024> routeJ;
+    StaticJsonDocument<1024> routeDoc;
             
-    DeserializationError error = deserializeJson(routeJ, routeF);
+    DeserializationError error = deserializeJson(routeDoc, routeFile);
     if(error)
     {
         Serial.println("Failed to load JSON");
@@ -57,16 +61,59 @@ void loadRoute(Routes route, String Network)
     }
     else
     {
-
-      route.NID = routeJ[Network]["MRBR_NID"];
-      route.interface = routeJ[Network]["Interface"];
-  
-      for(int slaveInd = 0; slaveInd < routeJ[Network]["slaves"].size(); slaveInd++)
+      byte NID = routeDoc[Network]["MRBR_NID"];
+      const char* INT = routeDoc[Network]["Interface"];
+      Slave slaves[127];
+      for(int slaveInd = 0; slaveInd < routeDoc[Network]["slaves"].size(); slaveInd++)
       {
           Slave slave;
-          slave.DID = routeJ[Network]["slaves"][slaveInd]["DID"];
-          slave.Name = routeJ[Network]["slaves"][slaveInd]["NAME"];
-          route.slave[slaveInd] = slave;
+          slave.DID = routeDoc[Network]["slaves"][slaveInd]["DID"];
+          slave.Name = routeDoc[Network]["slaves"][slaveInd]["NAME"];
+          slaves[slaveInd] = slave;   
+      }
+      int slaveCount = routeDoc[Network]["slaves"].size();
+
+      routeFile.close();
+
+      if(Network == "MRBR")
+      {
+        MRBR.NID = NID;
+        MRBR.interface = INT; 
+        for(int i = 0; i < slaveCount; i++)
+        {
+          MRBR.slave[i] = slaves[i];          
+        }
+        MRBR.slaveCount = slaveCount;                
+      }
+      else if(Network == "MRSR_S1")
+      {
+        MRSR_S1.NID = NID;
+        MRSR_S1.interface = INT;
+        for(int i = 0; i < slaveCount; i++)
+        {
+          MRSR_S1.slave[i] = slaves[i];
+        }  
+        MRSR_S1.slaveCount = slaveCount;                         
+      }
+      else if(Network == "MRSR_S2")
+      {
+        MRSR_S2.NID = NID;
+        MRSR_S2.interface = INT;
+        for(int i = 0; i < slaveCount; i++)
+        {
+          MRSR_S2.slave[i] = slaves[i];
+        }  
+        MRSR_S2.slaveCount = slaveCount;                         
+      }
+    }
+}
+
+void printRoute(Routes route)
+{
+      int d1, d2, i1, i2;
+
+      for(int slaveInd = 0; slaveInd < route.slaveCount; slaveInd++)
+      {
           Serial.println("|------------|--------------------|------------|");      
           Serial.print  ("|    ");Serial.print("0x");
           if(route.slave[slaveInd].DID < 10)
@@ -102,9 +149,29 @@ void loadRoute(Routes route, String Network)
   
       }
       Serial.println("________________________________________________");
-             
-      routeF.close();
-    }
+}
+
+String transmitOrder(int DID, byte order)
+{
+  Wire.begin();
+
+  Wire.beginTransmission(DID);
+  Wire.write(order);
+  Wire.endTransmission();
+
+  Wire.requestFrom(DID, 6);
+  String ret;
+  while(Wire.available()){
+    ret += Wire.read();
+  }
+
+  if(ret == "OK")
+  {
+    return "OK";
+  }
+  else{
+    return "NOK";
+  }
 }
 
 void setup() {
@@ -114,6 +181,9 @@ void setup() {
   xTaskCreatePinnedToCore(IoTask, "IO", 10000, NULL, 1, &IoCtrl,1);
   delay(500);
 
+  loadRoute("MRBR");
+  loadRoute("MRSR_S1");
+  loadRoute("MRSR_S2");
 }
 
 void IoTask (void * pvParameters){
@@ -177,45 +247,57 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
-        Routes MRBR;
-        Routes MRSR_S1;
-        Routes MRSR_S2;
-
         Serial.println("________________________________________________");
         Serial.println("|                 MRBR NETWORK                 |");
         Serial.println("|----------------------------------------------|");
         Serial.println("|     DID    |       NAME         |  MRBR INT  |");
-        loadRoute(MRBR, "MRBR");
+        printRoute(MRBR);
   
         Serial.println("________________________________________________");
         Serial.println("|                 MRSR_S1 NETWORK              |");
         Serial.println("|----------------------------------------------|");
         Serial.println("|     DID    |       NAME         |  MRBR INT  |");
-        loadRoute(MRSR_S1, "MRSR_S1");
+        printRoute(MRSR_S1);
         
         Serial.println("________________________________________________");
         Serial.println("|                 MRSR_S2 NETWORK              |");
         Serial.println("|----------------------------------------------|");
         Serial.println("|     DID    |       NAME         |  MRBR INT  |");           
-        loadRoute(MRSR_S2, "MRSR_S2");     
+        printRoute(MRSR_S2);     
                    
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
-        Serial.print("MRBR I2C address : ");
+        Serial.print("MRBR I2C address : 0x0");
         Serial.println(RTR_ADD, HEX);
       }
       else
       {
-        Serial.println(cmd);
+        //Serial.println(cmd);
       }
     }
     else if(BT.available()>0)
     {
-      //Serial.println(Serial.readString());
+      byte NID = BT.readStringUntil('/').toInt();
+      int DID = BT.readStringUntil('/').toInt();
+      byte order = BT.readStringUntil('#').toInt();
 
-      String cmd = BT.readStringUntil('#');
-      
+      if(NID == MRBR.NID)
+      {
+        transmitOrder(DID, order);
+      }
+      else if(NID == MRSR_S1.NID){
+        Serial.println("DEBUG : MRSR_S1");
+        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(order < 10){Serial.print('0');}Serial.print(order);Serial.println('#');
+      }
+      else if(NID == MRSR_S2.NID){
+        Serial.println("DEBUG : MRSR_S2");
+        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(order < 10){Serial.print('0');}Serial.print(order);Serial.println('#');
+      }
+      else{
+        Serial.println("Default :");
+        Serial.print(NID);Serial.print(DID);Serial.print(order);Serial.println('#');
+      }
     }
     delay(2);
   }
