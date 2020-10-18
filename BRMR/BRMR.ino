@@ -10,6 +10,8 @@
 #define STANDBY 1
 #define CONNECTED 2
 
+#define VERSION "1.0"
+
 //Bluetooth Task
 TaskHandle_t ComCtrl;
 //IO task
@@ -151,12 +153,13 @@ void printRoute(Routes route)
       Serial.println("________________________________________________");
 }
 
-String transmitOrder(int DID, byte order)
+String transmitOrder(int DID, byte orderType, byte orderParam)
 {
   Wire.begin();
 
   Wire.beginTransmission(DID);
-  Wire.write(order);
+  Wire.write(orderType);
+  Wire.write(orderParam);
   Wire.endTransmission();
 
   Wire.requestFrom(DID, 6);
@@ -221,8 +224,8 @@ void ComTask (void * pvParameters){
   btState = STANDBY;
 
   Serial.begin(115200);
-  //Serial1.begin(115200);
-  //Serial2.begin(115200);
+  Serial1.begin(115200);
+  Serial2.begin(115200);
 
   if(!SPIFFS.begin(true)){
     Serial.println("E/FS/M#");
@@ -280,23 +283,24 @@ void ComTask (void * pvParameters){
     {
       byte NID = BT.readStringUntil('/').toInt();
       int DID = BT.readStringUntil('/').toInt();
-      byte order = BT.readStringUntil('#').toInt();
-
+      byte orderType = BT.readStringUntil('/').toInt();
+      byte orderParam = BT.readStringUntil('#').toInt();
+      
       if(NID == MRBR.NID)
       {
-        transmitOrder(DID, order);
+        BT.print(transmitOrder(DID, orderType, orderParam));BT.println('#');
       }
       else if(NID == MRSR_S1.NID){
-        Serial.println("DEBUG : MRSR_S1");
-        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(order < 10){Serial.print('0');}Serial.print(order);Serial.println('#');
+        Serial1.println("DEBUG : MRSR_S1");
+        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(orderType < 10){Serial.print('0');}Serial.print(orderType);Serial.print('/');if(orderParam < 10){Serial.print('0');}Serial.print(orderParam);Serial.println('#');
       }
       else if(NID == MRSR_S2.NID){
-        Serial.println("DEBUG : MRSR_S2");
-        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(order < 10){Serial.print('0');}Serial.print(order);Serial.println('#');
+        Serial2.println("DEBUG : MRSR_S2");
+        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(orderType < 10){Serial.print('0');}Serial.print(orderType);Serial.print('/');if(orderParam < 10){Serial.print('0');}Serial.print(orderParam);Serial.println('#');
       }
       else{
         Serial.println("Default :");
-        Serial.print(NID);Serial.print(DID);Serial.print(order);Serial.println('#');
+        if(DID < 10){Serial.print('0');}Serial.print(DID);Serial.print('/');if(orderType < 10){Serial.print('0');}Serial.print(orderType);Serial.print('/');if(orderParam < 10){Serial.print('0');}Serial.print(orderParam);Serial.println('#');
       }
     }
     delay(2);
