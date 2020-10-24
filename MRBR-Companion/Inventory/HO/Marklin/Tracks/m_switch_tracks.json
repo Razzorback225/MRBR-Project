@@ -1,0 +1,84 @@
+{
+  "5128":
+  {
+    "track_class":"switch",
+    "track_desc" : "Double junction crossing",
+    "track_length": 193,
+    "track_curve_in": "30°",
+    "track_curve_out" : "0°",
+    "track_pic" : "track_pics/5128.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+  "5138":
+  {
+    "track_class":"switch",
+    "track_desc" : "Left switch",
+    "track_length": 180,
+    "track_curve_in": "22°30'",
+    "track_curve_out" : "0°",
+    "track_pic" : "track_pics/5138.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+  "5139":
+  {
+    "track_class":"switch",
+    "track_desc" : "Right switch",
+    "track_length": 180,
+    "track_curve_in": "22°30'",
+    "track_curve_out" : "0°",
+    "track_pic" : "track_pics/5139.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+  "5141":
+  {
+    "track_class":"switch",
+    "track_desc" : "Left curved switch",
+    "track_length": "N/A",
+    "track_curve_in": "30°",
+    "track_curve_out" : "30°",
+    "track_in_out_curve_distance" : 77.4,
+    "track_pic" : "track_pics/5141.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+  "5142":
+  {
+    "track_class":"switch",
+    "track_desc" : "Right curved switch",
+    "track_length": "N/A",
+    "track_curve_in": "30°",
+    "track_curve_out" : "30°",
+    "track_in_out_curve_distance" : 77.4,
+    "track_pic" : "track_pics/5142.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+  "5203":
+  {
+    "track_class":"switch",
+    "track_desc" : "Left switch",
+    "track_length": 180,
+    "track_curve_in": "24°17'",
+    "track_curve_out" : "0°",
+    "track_in_out_curve_distance" : "N/A",
+    "track_pic" : "track_pics/5203.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+  "5204":
+  {
+    "track_class":"switch",
+    "track_desc" : "Right switch",
+    "track_length": 180,
+    "track_curve_in": "24°17'",
+    "track_curve_out" : "0°",
+    "track_in_out_curve_distance" : "N/A",
+    "track_pic" : "track_pics/5204.png",
+    "track_is_remotable" : true,
+    "track_is_feeder" : false
+  },
+
+}
