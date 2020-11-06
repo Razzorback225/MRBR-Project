@@ -132,12 +132,16 @@
     <Content Include="Resources\init_img.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\light_g.png" />
+    <Content Include="Resources\light_r.png" />
     <Content Include="Resources\sw_dir.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\sw_left.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\sw_off.png" />
+    <Content Include="Resources\sw_on.png" />
     <Content Include="Resources\sw_right.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

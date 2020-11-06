@@ -49,10 +49,8 @@
             this.SpeedControl = new System.Windows.Forms.TrackBar();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.TrLgtCB = new System.Windows.Forms.ComboBox();
-            this.button1 = new System.Windows.Forms.Button();
             this.SwCtrlGB = new System.Windows.Forms.GroupBox();
             this.SwNameCB = new System.Windows.Forms.ComboBox();
-            this.GoStrBtn = new System.Windows.Forms.Button();
             this.ConsoleTab = new System.Windows.Forms.TabPage();
             this.SendCmdBtn = new System.Windows.Forms.Button();
             this.CommandInputBox = new System.Windows.Forms.TextBox();
@@ -60,6 +58,8 @@
             this.LayoutTab = new System.Windows.Forms.TabPage();
             this.LayoutMapBox = new System.Windows.Forms.PictureBox();
             this.SettingsTab = new System.Windows.Forms.TabPage();
+            this.SwitchBtn = new System.Windows.Forms.PictureBox();
+            this.TrafficLightBtn = new System.Windows.Forms.PictureBox();
             this.SerialGB.SuspendLayout();
             this.TabControl.SuspendLayout();
             this.ControlsTab.SuspendLayout();
@@ -75,6 +75,8 @@
             this.ConsoleTab.SuspendLayout();
             this.LayoutTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.LayoutMapBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SwitchBtn)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrafficLightBtn)).BeginInit();
             this.SuspendLayout();
             // 
             // SerialPortCB
@@ -271,11 +273,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.TrafficLightBtn);
             this.groupBox1.Controls.Add(this.TrLgtCB);
-            this.groupBox1.Controls.Add(this.button1);
-            this.groupBox1.Location = new System.Drawing.Point(159, 6);
+            this.groupBox1.Location = new System.Drawing.Point(151, 6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(147, 117);
+            this.groupBox1.Size = new System.Drawing.Size(140, 184);
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Traffic Lights Control";
@@ -285,25 +287,16 @@
             this.TrLgtCB.FormattingEnabled = true;
             this.TrLgtCB.Location = new System.Drawing.Point(6, 19);
             this.TrLgtCB.Name = "TrLgtCB";
-            this.TrLgtCB.Size = new System.Drawing.Size(134, 21);
+            this.TrLgtCB.Size = new System.Drawing.Size(128, 21);
             this.TrLgtCB.TabIndex = 0;
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(6, 46);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(134, 64);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Toggle Traffic Light";
-            this.button1.UseVisualStyleBackColor = true;
             // 
             // SwCtrlGB
             // 
+            this.SwCtrlGB.Controls.Add(this.SwitchBtn);
             this.SwCtrlGB.Controls.Add(this.SwNameCB);
-            this.SwCtrlGB.Controls.Add(this.GoStrBtn);
             this.SwCtrlGB.Location = new System.Drawing.Point(6, 6);
             this.SwCtrlGB.Name = "SwCtrlGB";
-            this.SwCtrlGB.Size = new System.Drawing.Size(147, 117);
+            this.SwCtrlGB.Size = new System.Drawing.Size(139, 184);
             this.SwCtrlGB.TabIndex = 0;
             this.SwCtrlGB.TabStop = false;
             this.SwCtrlGB.Text = "Switches Control";
@@ -313,17 +306,8 @@
             this.SwNameCB.FormattingEnabled = true;
             this.SwNameCB.Location = new System.Drawing.Point(6, 19);
             this.SwNameCB.Name = "SwNameCB";
-            this.SwNameCB.Size = new System.Drawing.Size(134, 21);
+            this.SwNameCB.Size = new System.Drawing.Size(128, 21);
             this.SwNameCB.TabIndex = 0;
-            // 
-            // GoStrBtn
-            // 
-            this.GoStrBtn.Location = new System.Drawing.Point(6, 46);
-            this.GoStrBtn.Name = "GoStrBtn";
-            this.GoStrBtn.Size = new System.Drawing.Size(134, 64);
-            this.GoStrBtn.TabIndex = 1;
-            this.GoStrBtn.Text = "Toggle Switch";
-            this.GoStrBtn.UseVisualStyleBackColor = true;
             // 
             // ConsoleTab
             // 
@@ -407,6 +391,28 @@
             this.SettingsTab.Text = "Settings";
             this.SettingsTab.UseVisualStyleBackColor = true;
             // 
+            // SwitchBtn
+            // 
+            this.SwitchBtn.Image = ((System.Drawing.Image)(resources.GetObject("SwitchBtn.Image")));
+            this.SwitchBtn.Location = new System.Drawing.Point(6, 46);
+            this.SwitchBtn.Name = "SwitchBtn";
+            this.SwitchBtn.Size = new System.Drawing.Size(128, 128);
+            this.SwitchBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.SwitchBtn.TabIndex = 1;
+            this.SwitchBtn.TabStop = false;
+            this.SwitchBtn.Click += new System.EventHandler(this.SwitchBtn_Click);
+            // 
+            // TrafficLightBtn
+            // 
+            this.TrafficLightBtn.Image = ((System.Drawing.Image)(resources.GetObject("TrafficLightBtn.Image")));
+            this.TrafficLightBtn.Location = new System.Drawing.Point(6, 46);
+            this.TrafficLightBtn.Name = "TrafficLightBtn";
+            this.TrafficLightBtn.Size = new System.Drawing.Size(128, 128);
+            this.TrafficLightBtn.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.TrafficLightBtn.TabIndex = 2;
+            this.TrafficLightBtn.TabStop = false;
+            this.TrafficLightBtn.Click += new System.EventHandler(this.TrafficLightBtn_Click);
+            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -435,6 +441,8 @@
             this.ConsoleTab.PerformLayout();
             this.LayoutTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.LayoutMapBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SwitchBtn)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrafficLightBtn)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -457,10 +465,8 @@
         private System.Windows.Forms.PictureBox LayoutMapBox;
         private System.Windows.Forms.GroupBox SwCtrlGB;
         private System.Windows.Forms.ComboBox SwNameCB;
-        private System.Windows.Forms.Button GoStrBtn;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ComboBox TrLgtCB;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.GroupBox TrainControlsGB;
         private System.Windows.Forms.GroupBox SpeedIndicGB;
         private System.Windows.Forms.Label label2;
@@ -471,6 +477,8 @@
         private System.Windows.Forms.PictureBox BcwdInd;
         private System.Windows.Forms.ComboBox TrackCB;
         private System.Windows.Forms.PictureBox EmBreakBtn;
+        private System.Windows.Forms.PictureBox TrafficLightBtn;
+        private System.Windows.Forms.PictureBox SwitchBtn;
     }
 }
 

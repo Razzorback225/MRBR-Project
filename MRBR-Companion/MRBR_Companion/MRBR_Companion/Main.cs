@@ -186,5 +186,23 @@ namespace MRBR_Companion
                 Invoke(new EventHandler(SendCmdBtn_Click));
             }
         }
+        bool _lightG = false;
+        private void TrafficLightBtn_Click(object sender, EventArgs e)
+        {
+            if(_lightG)
+            {
+                TrafficLightBtn.Image = new Bitmap("Resources/light_r.png");
+            }
+            else
+            {
+                TrafficLightBtn.Image = new Bitmap("Resources/light_g.png");
+            }
+            _lightG = !_lightG;
+        }
+
+        private void SwitchBtn_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
