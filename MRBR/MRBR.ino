@@ -1,7 +1,5 @@
 #include "BluetoothSerial.h"
 #include <Wire.h>
-#include "SPIFFS.h"
-#include <ArduinoJson.h>
 
 #define RTR_ADD 0x01
 #define bt_led 2
@@ -17,98 +15,18 @@ TaskHandle_t ComCtrl;
 //IO task
 TaskHandle_t IoCtrl;
 
+//Create a new instance of the BluetoothSerial class
 BluetoothSerial BT;
 
-int btState;
 
-struct Slave{
-  byte DID;
-  const char* Name;
-};
-struct Routes {
-  byte NID;
-  const char* interface;
-  Slave slave[127];
-  int slaveCount;
-};
-
+/*
+ * Create 3 new "Routes" structures.
+ * The first route is the route for I2C devices that are part of the MRBR's I2C network.
+ * The other two are the routes for the devices in the I2C network of the 2 MRSR that could be connected via UART1 and UART2.
+ */
 Routes MRBR;
 Routes MRSR_S1;
 Routes MRSR_S2;
-
-void bt_callback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
-  switch(event)
-  {
-    case ESP_SPP_SRV_OPEN_EVT:
-      btState = CONNECTED;
-      break;
-    case ESP_SPP_CLOSE_EVT:
-      btState = STANDBY;
-      break;
-  }
-}
-
-void loadRoute(String Network)
-{
-      //Print Routing Table
-    File routeFile = SPIFFS.open("/route.json", "r");
-
-    StaticJsonDocument<1024> routeDoc;
-            
-    DeserializationError error = deserializeJson(routeDoc, routeFile);
-    if(error)
-    {
-        Serial.println("Failed to load JSON");
-        Serial.print("Error: ");Serial.println(error.c_str());
-    }
-    else
-    {
-      byte NID = routeDoc[Network]["MRBR_NID"];
-      const char* INT = routeDoc[Network]["Interface"];
-      Slave slaves[127];
-      for(int slaveInd = 0; slaveInd < routeDoc[Network]["slaves"].size(); slaveInd++)
-      {
-          Slave slave;
-          slave.DID = routeDoc[Network]["slaves"][slaveInd]["DID"];
-          slave.Name = routeDoc[Network]["slaves"][slaveInd]["NAME"];
-          slaves[slaveInd] = slave;   
-      }
-      int slaveCount = routeDoc[Network]["slaves"].size();
-
-      routeFile.close();
-
-      if(Network == "MRBR")
-      {
-        MRBR.NID = NID;
-        MRBR.interface = INT; 
-        for(int i = 0; i < slaveCount; i++)
-        {
-          MRBR.slave[i] = slaves[i];          
-        }
-        MRBR.slaveCount = slaveCount;                
-      }
-      else if(Network == "MRSR_S1")
-      {
-        MRSR_S1.NID = NID;
-        MRSR_S1.interface = INT;
-        for(int i = 0; i < slaveCount; i++)
-        {
-          MRSR_S1.slave[i] = slaves[i];
-        }  
-        MRSR_S1.slaveCount = slaveCount;                         
-      }
-      else if(Network == "MRSR_S2")
-      {
-        MRSR_S2.NID = NID;
-        MRSR_S2.interface = INT;
-        for(int i = 0; i < slaveCount; i++)
-        {
-          MRSR_S2.slave[i] = slaves[i];
-        }  
-        MRSR_S2.slaveCount = slaveCount;                         
-      }
-    }
-}
 
 void printRoute(Routes route)
 {
