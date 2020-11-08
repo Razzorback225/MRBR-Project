@@ -1,75 +1,13 @@
-#include "BluetoothSerial.h"
 #include <Wire.h>
+#include "config.h"
+#include "bt.h"
 
-#define RTR_ADD 0x01
 #define bt_led 2
-#define DEVICE_TYPE "MRBR"
-
-#define STANDBY 1
-#define CONNECTED 2
-
-#define VERSION "1.0"
 
 //Bluetooth Task
 TaskHandle_t ComCtrl;
 //IO task
 TaskHandle_t IoCtrl;
-
-//Create a new instance of the BluetoothSerial class
-BluetoothSerial BT;
-
-
-/*
- * Create 3 new "Routes" structures.
- * The first route is the route for I2C devices that are part of the MRBR's I2C network.
- * The other two are the routes for the devices in the I2C network of the 2 MRSR that could be connected via UART1 and UART2.
- */
-Routes MRBR;
-Routes MRSR_S1;
-Routes MRSR_S2;
-
-void printRoute(Routes route)
-{
-      int d1, d2, i1, i2;
-
-      for(int slaveInd = 0; slaveInd < route.slaveCount; slaveInd++)
-      {
-          Serial.println("|------------|--------------------|------------|");      
-          Serial.print  ("|    ");Serial.print("0x");
-          if(route.slave[slaveInd].DID < 10)
-          {
-            Serial.print("0");
-          }
-          Serial.print(route.slave[slaveInd].DID, HEX);
-          Serial.print("    |");
-          if(strlen(route.slave[slaveInd].Name)%2 == 0)
-          {
-            int delta = 20 - strlen(route.slave[slaveInd].Name);
-            d1, d2 = delta/2;
-          }
-          else{
-            int delta = 20 - strlen(route.slave[slaveInd].Name);
-            d1 = delta/2;
-            d2 = d1 + 1;
-          }
-          
-          for(i1=0; i1<d1; i1++)
-          {
-            Serial.print(" ");
-          }
-  
-          Serial.print(route.slave[slaveInd].Name);
-  
-          for(i2=0; i2<d2; i2++)
-          {
-            Serial.print(" ");
-          }
-          Serial.print("|");
-          Serial.print("     ");Serial.print(route.interface);Serial.println("     |");       
-  
-      }
-      Serial.println("________________________________________________");
-}
 
 String transmitOrder(int DID, byte orderType, byte orderParam)
 {
@@ -102,9 +40,9 @@ void setup() {
   xTaskCreatePinnedToCore(IoTask, "IO", 10000, NULL, 1, &IoCtrl,1);
   delay(500);
 
-  loadRoute("MRBR");
-  loadRoute("MRSR_S1");
-  loadRoute("MRSR_S2");
+  loadConfig("MRBR");
+  loadConfig("MRSR_S1");
+  loadConfig("MRSR_S2");
 }
 
 void IoTask (void * pvParameters){
@@ -142,7 +80,7 @@ void ComTask (void * pvParameters){
   btState = STANDBY;
 
   Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial1.begin(115200, SERIAL_8N1, 19, 18);
   Serial2.begin(115200);
 
   if(!SPIFFS.begin(true)){
@@ -158,13 +96,13 @@ void ComTask (void * pvParameters){
       //If the string received is a user command
       if(cmd == "help" || cmd == "-h")
       {
-        Serial.println("# ////COMMAND LIST\\\\");
-        Serial.println("# show {parameter} : Will shows informations.");
-        Serial.println("#       parameters:\n#");
-        Serial.println("#       route [-r] : Will displays all the existing route included in the config.json file.");
-        Serial.println("#       address [-a] : Will displays the current I2C address of the MRBR.");
-        Serial.println("#");
-        Serial.println("# help [-h] : Will shows this help message");
+        Serial.println(" ////COMMAND LIST\\\\");
+        Serial.println(" show {parameter} : Will shows informations.");
+        Serial.println("       parameters:\n");
+        Serial.println("       route [-r] : Will displays all the existing route included in the config.json file.");
+        Serial.println("       address [-a] : Will displays the current I2C address of the MRBR.");
+        Serial.println("");
+        Serial.println(" help [-h] : Will shows this help message");
       }
       else if(cmd == "show route" || cmd == "show -r")
       {
@@ -189,8 +127,7 @@ void ComTask (void * pvParameters){
       }
       else if(cmd == "show address" || cmd == "show -a")
       {
-        Serial.print("MRBR I2C address : 0x0");
-        Serial.println(RTR_ADD, HEX);
+        Serial.print("MRBR I2C address : 0x01");
       }
       else
       {

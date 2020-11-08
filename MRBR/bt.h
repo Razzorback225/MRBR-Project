@@ -1,3 +1,11 @@
+#include "BluetoothSerial.h"
+
+#define STANDBY 1
+#define CONNECTED 2
+
+//Create a new instance of the BluetoothSerial class
+BluetoothSerial BT;
+
 //Int variable to store the bluetooth state
 int btState;
 

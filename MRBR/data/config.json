@@ -1,8 +1,11 @@
 {
+  "MROS_VERSION":"1.0",
   "MRBR":{
     "MRBR_NID":0,
     "Interface":"L0",
     "slaves":[
+      {"DID":2,"NAME":"Dummy 1"},
+      {"DID":3,"NAME":"Dummy 2"}
     ]
   },
   "MRSR_S1":

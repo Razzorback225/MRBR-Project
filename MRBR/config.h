@@ -22,10 +22,21 @@ struct Routes {
   int slaveCount;
 };
 
-void loadRoute(String Network)
+/*
+ * Create 3 new "Routes" structures.
+ * The first route is the route for I2C devices that are part of the MRBR's I2C network.
+ * The other two are the routes for the devices in the I2C network of the 2 MRSR that could be connected via UART1 and UART2.
+ */
+Routes MRBR;
+Routes MRSR_S1;
+Routes MRSR_S2;
+
+const char* MROS_V;
+
+void loadConfig(String Network)
 {
       //Print Routing Table
-    File routeFile = SPIFFS.open("/route.json", "r");
+    File routeFile = SPIFFS.open("/config.json", "r");
 
     StaticJsonDocument<1024> routeDoc;
             
@@ -37,6 +48,7 @@ void loadRoute(String Network)
     }
     else
     {
+      MROS_V = routeDoc["MROS_VERSION"];
       byte NID = routeDoc[Network]["MRBR_NID"];
       const char* INT = routeDoc[Network]["Interface"];
       Slave slaves[127];
@@ -82,4 +94,47 @@ void loadRoute(String Network)
         MRSR_S2.slaveCount = slaveCount;                         
       }
     }
+}
+
+void printRoute(Routes route)
+{
+      int d1, d2, i1, i2;
+
+      for(int slaveInd = 0; slaveInd < route.slaveCount; slaveInd++)
+      {
+          Serial.println("|------------|--------------------|------------|");      
+          Serial.print  ("|    ");Serial.print("0x");
+          if(route.slave[slaveInd].DID < 10)
+          {
+            Serial.print("0");
+          }
+          Serial.print(route.slave[slaveInd].DID, HEX);
+          Serial.print("    |");
+          if(strlen(route.slave[slaveInd].Name)%2 == 0)
+          {
+            int delta = 20 - strlen(route.slave[slaveInd].Name);
+            d1, d2 = delta/2;
+          }
+          else{
+            int delta = 20 - strlen(route.slave[slaveInd].Name);
+            d1 = delta/2;
+            d2 = d1 + 1;
+          }
+          
+          for(i1=0; i1<d1; i1++)
+          {
+            Serial.print(" ");
+          }
+  
+          Serial.print(route.slave[slaveInd].Name);
+  
+          for(i2=0; i2<d2; i2++)
+          {
+            Serial.print(" ");
+          }
+          Serial.print("|");
+          Serial.print("     ");Serial.print(route.interface);Serial.println("     |");       
+  
+      }
+      Serial.println("________________________________________________");
 }
