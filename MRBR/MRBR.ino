@@ -14,8 +14,11 @@ String transmitOrder(int DID, byte orderType, byte orderParam)
   Wire.begin();
 
   Wire.beginTransmission(DID);
+  Wire.write('c');
   Wire.write(orderType);
+  Wire.write('p')
   Wire.write(orderParam);
+  Wire.write('e')
   Wire.endTransmission();
 
   Wire.requestFrom(DID, 6);
@@ -51,9 +54,9 @@ void IoTask (void * pvParameters){
       case STANDBY:
         while(btState == STANDBY){
           digitalWrite(bt_led, HIGH);
-          delay(250);
+          delay(200);
           digitalWrite(bt_led, LOW);
-          delay(250);
+          delay(200);
         }
         break;
       case CONNECTED:
