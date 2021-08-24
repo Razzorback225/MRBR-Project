@@ -48,15 +48,8 @@ F 3 "" H 4400 1400 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4400 1400 4400 1700
-NoConn ~ 3800 3100
-NoConn ~ 3800 3200
-NoConn ~ 3800 3300
-NoConn ~ 3800 3400
-NoConn ~ 3800 3500
-NoConn ~ 3800 3600
-NoConn ~ 3800 2100
-NoConn ~ 3800 2200
-NoConn ~ 3650 3250
+NoConn ~ 3350 2100
+NoConn ~ 3350 2200
 Wire Wire Line
 	3800 1900 3400 1900
 Text Label 3500 1900 0    50   ~ 0
@@ -437,6 +430,44 @@ U 611C9502
 F0 "PSU" 50
 F1 "PSU.sch" 50
 $EndSheet
+Wire Wire Line
+	3800 3100 3350 3100
+Wire Wire Line
+	3350 3200 3800 3200
+Wire Wire Line
+	3350 3300 3800 3300
+Wire Wire Line
+	3350 3400 3800 3400
+Wire Wire Line
+	3350 3500 3800 3500
+Wire Wire Line
+	3350 3600 3800 3600
+NoConn ~ 3350 3100
+NoConn ~ 3350 3200
+NoConn ~ 3350 3300
+NoConn ~ 3350 3400
+NoConn ~ 3350 3500
+NoConn ~ 3350 3600
+Wire Wire Line
+	3800 2100 3350 2100
+Wire Wire Line
+	3350 2200 3800 2200
+Text Label 3450 2100 0    50   ~ 0
+S_VP_NC
+Text Label 3450 2200 0    50   ~ 0
+S_VN_NC
+Text Label 3450 3100 0    50   ~ 0
+SD0_NC
+Text Label 3450 3200 0    50   ~ 0
+SD1_NC
+Text Label 3450 3300 0    50   ~ 0
+SD2_NC
+Text Label 3450 3400 0    50   ~ 0
+SD3_NC
+Text Label 3450 3500 0    50   ~ 0
+CLK_NC
+Text Label 3450 3600 0    50   ~ 0
+CMD_NC
 Wire Bus Line
 	6350 3400 6350 3600
 Wire Bus Line

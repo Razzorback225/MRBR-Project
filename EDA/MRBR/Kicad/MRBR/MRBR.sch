@@ -452,14 +452,6 @@ Wire Wire Line
 	3800 2100 3350 2100
 Wire Wire Line
 	3350 2200 3800 2200
-Wire Bus Line
-	6350 3400 6350 3600
-Wire Bus Line
-	5450 2400 5450 2600
-Wire Bus Line
-	5450 2600 5450 2900
-Wire Bus Line
-	5450 3600 5450 4300
 Text Label 3450 2100 0    50   ~ 0
 S_VP_NC
 Text Label 3450 2200 0    50   ~ 0
@@ -476,4 +468,12 @@ Text Label 3450 3500 0    50   ~ 0
 CLK_NC
 Text Label 3450 3600 0    50   ~ 0
 CMD_NC
+Wire Bus Line
+	6350 3400 6350 3600
+Wire Bus Line
+	5450 2400 5450 2600
+Wire Bus Line
+	5450 2600 5450 2900
+Wire Bus Line
+	5450 3600 5450 4300
 $EndSCHEMATC
