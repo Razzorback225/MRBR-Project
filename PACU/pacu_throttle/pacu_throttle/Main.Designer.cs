@@ -31,20 +31,20 @@
             this.components = new System.ComponentModel.Container();
             this.sp1 = new System.IO.Ports.SerialPort(this.components);
             this.panel1 = new System.Windows.Forms.Panel();
+            this.refreshBtn = new System.Windows.Forms.Button();
             this.connectBtn = new System.Windows.Forms.Button();
             this.portsCombo = new System.Windows.Forms.ComboBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.spdBar = new System.Windows.Forms.TrackBar();
-            this.thrLbl = new System.Windows.Forms.Label();
-            this.spdInfoGB = new System.Windows.Forms.GroupBox();
-            this.percTxb = new System.Windows.Forms.TextBox();
-            this.percLbl = new System.Windows.Forms.Label();
-            this.refreshBtn = new System.Windows.Forms.Button();
             this.logTxb = new System.Windows.Forms.TextBox();
+            this.spdInfoGB = new System.Windows.Forms.GroupBox();
+            this.percLbl = new System.Windows.Forms.Label();
+            this.percTxb = new System.Windows.Forms.TextBox();
+            this.thrLbl = new System.Windows.Forms.Label();
+            this.spdBar = new System.Windows.Forms.TrackBar();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spdBar)).BeginInit();
             this.spdInfoGB.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spdBar)).BeginInit();
             this.SuspendLayout();
             // 
             // sp1
@@ -62,6 +62,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(354, 60);
             this.panel1.TabIndex = 0;
+            // 
+            // refreshBtn
+            // 
+            this.refreshBtn.Dock = System.Windows.Forms.DockStyle.Left;
+            this.refreshBtn.Location = new System.Drawing.Point(0, 21);
+            this.refreshBtn.Name = "refreshBtn";
+            this.refreshBtn.Size = new System.Drawing.Size(75, 39);
+            this.refreshBtn.TabIndex = 2;
+            this.refreshBtn.Text = "Refresh";
+            this.refreshBtn.UseVisualStyleBackColor = true;
+            this.refreshBtn.Click += new System.EventHandler(this.refreshBtn_Click);
             // 
             // connectBtn
             // 
@@ -95,25 +106,19 @@
             this.panel2.Size = new System.Drawing.Size(354, 401);
             this.panel2.TabIndex = 1;
             // 
-            // spdBar
+            // logTxb
             // 
-            this.spdBar.BackColor = System.Drawing.Color.DimGray;
-            this.spdBar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.spdBar.Location = new System.Drawing.Point(309, 0);
-            this.spdBar.Name = "spdBar";
-            this.spdBar.Orientation = System.Windows.Forms.Orientation.Vertical;
-            this.spdBar.Size = new System.Drawing.Size(45, 401);
-            this.spdBar.TabIndex = 0;
-            this.spdBar.ValueChanged += new System.EventHandler(this.spdBar_ValueChanged);
-            // 
-            // thrLbl
-            // 
-            this.thrLbl.AutoSize = true;
-            this.thrLbl.Location = new System.Drawing.Point(6, 22);
-            this.thrLbl.Name = "thrLbl";
-            this.thrLbl.Size = new System.Drawing.Size(132, 20);
-            this.thrLbl.TabIndex = 1;
-            this.thrLbl.Text = "Throttle Value :";
+            this.logTxb.BackColor = System.Drawing.Color.Black;
+            this.logTxb.Dock = System.Windows.Forms.DockStyle.Left;
+            this.logTxb.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logTxb.ForeColor = System.Drawing.Color.Green;
+            this.logTxb.Location = new System.Drawing.Point(0, 58);
+            this.logTxb.Multiline = true;
+            this.logTxb.Name = "logTxb";
+            this.logTxb.ReadOnly = true;
+            this.logTxb.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.logTxb.Size = new System.Drawing.Size(309, 343);
+            this.logTxb.TabIndex = 4;
             // 
             // spdInfoGB
             // 
@@ -129,6 +134,15 @@
             this.spdInfoGB.TabStop = false;
             this.spdInfoGB.Text = "Throttle Infos";
             // 
+            // percLbl
+            // 
+            this.percLbl.AutoSize = true;
+            this.percLbl.Location = new System.Drawing.Point(252, 22);
+            this.percLbl.Name = "percLbl";
+            this.percLbl.Size = new System.Drawing.Size(24, 20);
+            this.percLbl.TabIndex = 3;
+            this.percLbl.Text = "%";
+            // 
             // percTxb
             // 
             this.percTxb.Location = new System.Drawing.Point(144, 19);
@@ -139,38 +153,25 @@
             this.percTxb.Text = "0";
             this.percTxb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // percLbl
+            // thrLbl
             // 
-            this.percLbl.AutoSize = true;
-            this.percLbl.Location = new System.Drawing.Point(252, 22);
-            this.percLbl.Name = "percLbl";
-            this.percLbl.Size = new System.Drawing.Size(24, 20);
-            this.percLbl.TabIndex = 3;
-            this.percLbl.Text = "%";
+            this.thrLbl.AutoSize = true;
+            this.thrLbl.Location = new System.Drawing.Point(6, 22);
+            this.thrLbl.Name = "thrLbl";
+            this.thrLbl.Size = new System.Drawing.Size(132, 20);
+            this.thrLbl.TabIndex = 1;
+            this.thrLbl.Text = "Throttle Value :";
             // 
-            // refreshBtn
+            // spdBar
             // 
-            this.refreshBtn.Dock = System.Windows.Forms.DockStyle.Left;
-            this.refreshBtn.Location = new System.Drawing.Point(0, 21);
-            this.refreshBtn.Name = "refreshBtn";
-            this.refreshBtn.Size = new System.Drawing.Size(75, 39);
-            this.refreshBtn.TabIndex = 2;
-            this.refreshBtn.Text = "Refresh";
-            this.refreshBtn.UseVisualStyleBackColor = true;
-            this.refreshBtn.Click += new System.EventHandler(this.refreshBtn_Click);
-            // 
-            // logTxb
-            // 
-            this.logTxb.BackColor = System.Drawing.Color.Black;
-            this.logTxb.Dock = System.Windows.Forms.DockStyle.Left;
-            this.logTxb.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.logTxb.ForeColor = System.Drawing.Color.Green;
-            this.logTxb.Location = new System.Drawing.Point(0, 58);
-            this.logTxb.Multiline = true;
-            this.logTxb.Name = "logTxb";
-            this.logTxb.ReadOnly = true;
-            this.logTxb.Size = new System.Drawing.Size(309, 343);
-            this.logTxb.TabIndex = 4;
+            this.spdBar.BackColor = System.Drawing.Color.DimGray;
+            this.spdBar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.spdBar.Location = new System.Drawing.Point(309, 0);
+            this.spdBar.Name = "spdBar";
+            this.spdBar.Orientation = System.Windows.Forms.Orientation.Vertical;
+            this.spdBar.Size = new System.Drawing.Size(45, 401);
+            this.spdBar.TabIndex = 0;
+            this.spdBar.ValueChanged += new System.EventHandler(this.spdBar_ValueChanged);
             // 
             // Main
             // 
@@ -187,9 +188,9 @@
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.spdBar)).EndInit();
             this.spdInfoGB.ResumeLayout(false);
             this.spdInfoGB.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.spdBar)).EndInit();
             this.ResumeLayout(false);
 
         }

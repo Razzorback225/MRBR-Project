@@ -1,7 +1,16 @@
-#define ZCD_PIN 19
-#define GC_PIN 18
+#ifdef __AVR__
+//Define pins for AVR chip family
+#define ZCD_PIN 2
+#define GC_PIN 8
 
-int delta;
+#elif __XTENSA__
+//Define pins for ESP chip family 
+#define ZCD_PIN 18
+#define GC_PIN 19
+
+#endif
+
+int delta = 10000;
 
 void setup() {
   //Define pin mode
@@ -16,19 +25,14 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   digitalWrite(GC_PIN, LOW);  
-  if(Serial.available() > 0){
-    String spdPerc = Serial.readStringUntil('#');
-    delta = map(spdPerc.toInt(), 0, 100, 8500, 0);
-    Serial.print("Speed percentage : ");Serial.println(spdPerc);
-    Serial.print("Delay value : ");Serial.println(delta);
-  }
-  digitalWrite(GC_PIN, LOW);
+  //Serial.println(0);
 }
 
 //Set track voltage according to the set microDelay
 void setTrackVoltage(){
+  //Serial.println(1);
   delayMicroseconds(delta);
   digitalWrite(GC_PIN, HIGH);
-  delayMicroseconds(500);
+  delayMicroseconds(100);
   digitalWrite(GC_PIN, LOW);
 }

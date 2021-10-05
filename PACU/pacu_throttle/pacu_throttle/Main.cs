@@ -14,12 +14,9 @@ namespace pacu_throttle
 {
     public partial class Main : Form
     {
-        bool port_is_open = false;
-
         public Main()
         {
             InitializeComponent();
-            port_is_open = sp1.IsOpen;
             refreshPorts();
         }
 
@@ -35,7 +32,7 @@ namespace pacu_throttle
 
             percTxb.Text = val.ToString();
 
-            if (port_is_open)
+            if (sp1.IsOpen)
             {
                 sp1.WriteLine(val.ToString()+"#");
             }
@@ -50,7 +47,7 @@ namespace pacu_throttle
 
         private void Main_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (port_is_open)
+            if (sp1.IsOpen)
             {
                 //Close port
                 sp1.Close();
@@ -69,7 +66,7 @@ namespace pacu_throttle
 
         private void connectBtn_Click(object sender, EventArgs e)
         {
-            if (port_is_open)
+            if (sp1.IsOpen)
             {
                 try
                 {
@@ -90,7 +87,6 @@ namespace pacu_throttle
                     try
                     {
                         sp1.Open();
-                        port_is_open = sp1.IsOpen;
                         connectBtn.Text = "Disconnect";
                     }
                     catch(IOException er)
