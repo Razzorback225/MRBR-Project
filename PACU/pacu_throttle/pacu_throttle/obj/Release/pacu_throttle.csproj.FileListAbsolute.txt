@@ -1,9 +1,0 @@
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\bin\Release\pacu_throttle.exe.config
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\bin\Release\pacu_throttle.exe
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\bin\Release\pacu_throttle.pdb
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\obj\Release\pacu_throttle.Main.resources
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\obj\Release\pacu_throttle.Properties.Resources.resources
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\obj\Release\pacu_throttle.csproj.GenerateResource.cache
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\obj\Release\pacu_throttle.csproj.CoreCompileInputs.cache
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\obj\Release\pacu_throttle.exe
-D:\Manul\MRBR-Project\PACU\pacu_throttle\pacu_throttle\obj\Release\pacu_throttle.pdb
