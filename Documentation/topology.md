@@ -18,12 +18,12 @@ The Nucleus exposes a certain amount of Inputs and Outputs in order to perform i
 - POWER OUT : This is the power distribution output for all the nodes on the layout.
 - DISPLAY : If you don't want to use a custom Control Panel nor the MRBR App, you could also integrate a touch screen to the setup (via HDMI or DSI).
 
-## Node :
+### Node :
 The MRBR Node is the local unit of the layout. After receiving some commands, it will perfom such tasks as :
 - Control the power tracks attached to it (1 for the Mono-Node and until 4 for the Quad-Node)
 - Control the switch tracks attached to it (until 4)
 - Control traffic lights and scenary lights (Quad-Node or A-Node only)
 - Receive triggers from sensor on the layout to perform some automated tasks
 
-## A-Node : 
+### A-Node : 
 The A(ccessory)-Node is, as its name stand it, controls accessory such as lights, animation and so on.
