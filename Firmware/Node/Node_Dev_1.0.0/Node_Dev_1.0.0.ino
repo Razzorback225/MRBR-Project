@@ -12,6 +12,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
   for (int i=0;i<length;i++) {
     buffer += (char)payload[i];
   }
+  printf("Raw buffer : %s", buffer.c_str());
+  DynamicJsonDocument payloadJson(1024);
+  DeserializationError err = deserializeJson(payloadJson, buffer);
+  switch (err.code()) {
+      case DeserializationError::Ok:
+          
+          break;
+      case DeserializationError::InvalidInput:
+          Serial.print(F("Invalid input!"));
+          break;
+      case DeserializationError::NoMemory:
+          Serial.print(F("Not enough memory"));
+          break;
+      default:
+          Serial.print(F("Deserialization failed"));
+          break;
+  }
 }
 
 static bool eth_connected = false;
@@ -34,7 +51,7 @@ void WiFiEvent(WiFiEvent_t event)
     case ARDUINO_EVENT_ETH_START:
       Serial.println("ETH Started");
       //set eth hostname here
-      ETH.setHostname(hostname.c_str());
+      //ETH.setHostname(hostname.c_str());
       break;
     case ARDUINO_EVENT_ETH_CONNECTED:
       Serial.println("ETH Connected");
@@ -75,10 +92,18 @@ void reconnect() {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if (client.connect(getSerial().c_str())) {
-      Serial.println("connected");
-      // Once connected, publish an announcement...
-      String payload = "{'node_id':'"+getSerial()+"'}";
+      Serial.println("connected\nSending discovery message.");
+      StaticJsonDocument<200> discoveryPayload;
+      discoveryPayload["node_id"] =  getSerial();
+      discoveryPayload["node_address"] = ethClient.localIP();
+      String payload = "";
+      serializeJson(discoveryPayload, payload);
+      // Pushing message on discovery topic to show presence
       client.publish("discovery",payload.c_str());
+      // Subscribe to the specific node topic
+      String node_topic = "nodes/" + getSerial();
+      client.subscribe(node_topic.c_str());
+      // Subscribe to the general node topic
       client.subscribe("nodes");
     } else {
       Serial.print("failed, rc=");
