@@ -1,0 +1,105 @@
+(kicad_sch (version 20230121) (generator eeschema)
+
+  (uuid 48ecc24b-1ca1-455a-ac86-9597a620a90f)
+
+  (paper "A4")
+
+  (title_block
+    (title "MRBR : Node")
+    (date "2023-12-25")
+    (rev "1.0.0")
+  )
+
+  (lib_symbols
+  )
+
+
+  (sheet (at 151.13 41.275) (size 19.685 17.78) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 117c90f1-1dd3-414f-8e8b-96546749c6fa)
+    (property "Sheetname" "Track Control" (at 151.13 40.5634 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "track_ctrl.kicad_sch" (at 151.13 59.6396 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "Node"
+        (path "/48ecc24b-1ca1-455a-ac86-9597a620a90f" (page "6"))
+      )
+    )
+  )
+
+  (sheet (at 67.31 60.96) (size 17.145 27.94) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 562b41a4-1da3-4adb-b342-096fc2b40a9a)
+    (property "Sheetname" "Ethernet" (at 67.31 60.2484 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "eth.kicad_sch" (at 67.31 89.4846 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "Node"
+        (path "/48ecc24b-1ca1-455a-ac86-9597a620a90f" (page "3"))
+      )
+    )
+  )
+
+  (sheet (at 104.14 99.695) (size 30.48 27.94) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid 69afdc1a-d028-4add-ba68-0ec2d4150966)
+    (property "Sheetname" "Flash Interface" (at 104.14 98.9834 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "flash.kicad_sch" (at 104.14 128.2196 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "Node"
+        (path "/48ecc24b-1ca1-455a-ac86-9597a620a90f" (page "5"))
+      )
+    )
+  )
+
+  (sheet (at 110.49 53.975) (size 19.05 31.75) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid a5545c38-9a32-4b82-a707-3d96a31e434d)
+    (property "Sheetname" "ESP32" (at 110.49 53.2634 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "esp32.kicad_sch" (at 110.49 86.3096 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "Node"
+        (path "/48ecc24b-1ca1-455a-ac86-9597a620a90f" (page "2"))
+      )
+    )
+  )
+
+  (sheet (at 167.64 67.945) (size 21.59 32.385) (fields_autoplaced)
+    (stroke (width 0.1524) (type solid))
+    (fill (color 0 0 0 0.0000))
+    (uuid aa73b237-661b-4536-8a16-323d35e128d0)
+    (property "Sheetname" "IO" (at 167.64 67.2334 0)
+      (effects (font (size 1.27 1.27)) (justify left bottom))
+    )
+    (property "Sheetfile" "io.kicad_sch" (at 167.64 100.9146 0)
+      (effects (font (size 1.27 1.27)) (justify left top))
+    )
+    (instances
+      (project "Node"
+        (path "/48ecc24b-1ca1-455a-ac86-9597a620a90f" (page "4"))
+      )
+    )
+  )
+
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
