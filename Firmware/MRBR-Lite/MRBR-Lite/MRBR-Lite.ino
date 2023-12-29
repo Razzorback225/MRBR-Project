@@ -7,8 +7,8 @@ I2SStream i2s0;
 I2SStream i2s1;
 VolumeStream volume0(i2s0);
 VolumeStream volume1(i2s1);
-SineWaveGenerator<int16_t> sineWave();            
-GeneratedSoundStream<int16_t> sound(sineWave);
+SineWaveGenerator<int32_t> sineWave(32000);            
+GeneratedSoundStream<int32_t> sound(sineWave);
 StreamCopy copier0(volume0, sound);
 StreamCopy copier1(volume1, sound);
 
@@ -18,12 +18,12 @@ void decodeCommand(String rawCommand){
   DynamicJsonDocument cmdJson(256);
 
   DeserializationError err = deserializeJson(cmdJson, rawCommand);
-  switch(err.code){
+  switch(err.code()){
     case DeserializationError::Ok:
-      if(payloadJson.containsKey("tr")){
-        int trackId = payloadJson["tr"][0];
-        float trackSpeed = payloadJson["tr"][1].as<float>();
-        bool reverseDir = payloadJson["tr"][2].as<bool>();
+      if(cmdJson.containsKey("tr")){
+        int trackId = cmdJson["tr"][0];
+        float trackSpeed = cmdJson["tr"][1].as<float>();
+        bool reverseDir = cmdJson["tr"][2].as<bool>();
 
         if(reverseDir){
           // If the track speed is not null, decrease the speed before changing direction.
@@ -35,7 +35,7 @@ void decodeCommand(String rawCommand){
                 JsonArray trackData = responseJson.createNestedArray("tr");
                 trackData.add(trackId);
                 trackData.add(tracksSpeeds[trackId]);
-                SerializeJson(responseJson, Serial);
+                serializeJson(responseJson, Serial);
                 float volume = (2/3) * tracksSpeeds[trackId];
                 volume0.setVolume(volume, trackId);
                 delay(250);
@@ -48,8 +48,8 @@ void decodeCommand(String rawCommand){
                 JsonArray trackData = responseJson.createNestedArray("tr");
                 trackData.add(trackId);
                 trackData.add(tracksSpeeds[trackId]);
-                SerializeJson(responseJson, Serial);
-                //SerializeJson(responseJson, bts);
+                serializeJson(responseJson, Serial);
+                //serializeJson(responseJson, bts);
                 float volume = (2/3) * tracksSpeeds[trackId];
                 volume1.setVolume(volume, trackId - 2);
                 delay(250);
@@ -76,8 +76,8 @@ void decodeCommand(String rawCommand){
             JsonArray trackData = responseJson.createNestedArray("tr");
             trackData.add(trackId);
             trackData.add(tracksSpeeds[trackId]);
-            SerializeJson(responseJson, Serial);
-            //SerializeJson(responseJson, bts);
+            serializeJson(responseJson, Serial);
+            //serializeJson(responseJson, bts);
             if(trackId < 2){
               float volume = (2/3) * tracksSpeeds[trackId];
               volume0.setVolume(volume, trackId);
@@ -92,9 +92,9 @@ void decodeCommand(String rawCommand){
           }
         }
       }
-      else if(payloadJson.containsKey("sw")){
-        int switchId = payloadJson["sw"][0];
-        int switchPos = payloadJson["sw"][1];
+      else if(cmdJson.containsKey("sw")){
+        int switchId = cmdJson["sw"][0];
+        int switchPos = cmdJson["sw"][1];
       }
       break;
     case DeserializationError::InvalidInput:
@@ -118,12 +118,12 @@ void setup() {
   config0.pin_bck = 14;
   config0.pin_ws = 15;
   config0.pin_data = 16;
-  i2s0.begin(config);  
+  i2s0.begin(config0);  
   auto config1 = i2s1.defaultConfig(TX_MODE);
   config1.pin_bck = 14;
   config1.pin_ws = 12;
   config1.pin_data = 13;
-  i2s1.begin(config);  
+  i2s1.begin(config1);  
 
   sineWave.begin(2, 44100, 50.0);
 }
@@ -134,7 +134,7 @@ void loop() {
   copier1.copy();
 
   if(Serial.available() > 0){
-    String rawCommand = Serial.readStringUntil("/n");
+    String rawCommand = Serial.readStringUntil('/n');
 
     decodeCommand(rawCommand);
   }
