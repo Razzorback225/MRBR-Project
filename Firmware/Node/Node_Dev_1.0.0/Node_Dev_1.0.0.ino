@@ -3,6 +3,26 @@
 #include <ETH.h>
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <Adafruit_MCP23X17.h>
+#include <Wire.h>
+
+#define CONFIG_ETH_USE_ESP32_EMAC
+
+#define ETH_PHY_TYPE        ETH_PHY_LAN8720
+#define ETH_PHY_ADDR        0
+#define ETH_PHY_MDC         23
+#define ETH_PHY_MDIO        18
+#define ETH_PHY_POWER       5
+#define ETH_CLK_MODE        ETH_CLOCK_GPIO17_OUT
+
+#define I2C_SDA 33
+#define I2C_SCL 32
+
+#define I2S0_WS 15
+#define I2S0_DOUT 16
+#define I2S_SCL 14
+#define I2S1_WS 12
+#define I2S1_DOUT 13
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Message arrived [");
@@ -17,7 +37,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
   DeserializationError err = deserializeJson(payloadJson, buffer);
   switch (err.code()) {
       case DeserializationError::Ok:
-          
+          if(payloadJson.containsKey("tr")){
+            int trackId = payloadJson["tr"][0];
+            float trackSpeed = payloadJson["tr"][1];
+            bool reverseDir = payloadJson["tr"][2];
+
+            if(reverseDir){
+              trackSpeed = 0.0;
+
+              // Switch direction
+            }
+          }
+          else if(payloadJson.containsKey("sw")){
+            int switchId = payloadJson["sw"][0];
+            int switchPos = payloadJson["sw"][1];
+          }
           break;
       case DeserializationError::InvalidInput:
           Serial.print(F("Invalid input!"));
@@ -85,6 +119,7 @@ void WiFiEvent(WiFiEvent_t event)
 
 WiFiClient ethClient;
 PubSubClient client(ethClient);
+Adafruit_MCP23X17 io_extender;
 
 void reconnect() {
   // Loop until we're reconnected
@@ -124,6 +159,11 @@ void setup()
   hostname += getSerial();
   ETH.begin();
   WiFi.onEvent(WiFiEvent);
+  TwoWire i2c = TwoWire(0);
+  i2c.begin(I2C_SDA, I2C_SCL, 100000);
+  if(!io_extender.begin_I2C(MCP23XXX_ADDR, &i2c)){
+    
+  }
   // Allow the hardware to sort itself out
   delay(1500);
 }
