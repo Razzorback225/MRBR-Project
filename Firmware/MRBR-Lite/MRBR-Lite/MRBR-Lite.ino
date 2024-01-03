@@ -12,7 +12,31 @@ GeneratedSoundStream<int32_t> sound(sineWave);
 StreamCopy copier0(volume0, sound);
 StreamCopy copier1(volume1, sound);
 
+bool isBtConnected = false;
 float tracksSpeeds[4] = {0.0,0.0,0.0,0.0};
+
+void btsCallback(esp_spp_cb_event_t event, esp_spp_cb_param_t *param){
+  switch(event){
+    //On data received
+    case ESP_SPP_DATA_IND_EVT:
+      if(bts.available() > 0){
+        String rawCmd = bts.readStringUntil('\n');
+
+        decodeCommand(rawCmd);
+      }
+      break;
+    //On connection opened 
+    case ESP_SPP_SRV_OPEN_EVT:
+      isBtConnected = true;
+      Serial.println("{'wtd' : {'msg':'Bluetooth client connected.','code':0x01}}");
+      break;
+    //On connection closed
+    case ESP_SPP_SRV_STOP_EVT:
+      isBtConnected = false;
+      Serial.println("{'wtd' : {'msg':'Bluetooth client disconnected.','code':0x00}}");
+      break;
+  }
+}
 
 void decodeCommand(String rawCommand){
   DynamicJsonDocument cmdJson(256);
@@ -25,31 +49,27 @@ void decodeCommand(String rawCommand){
         float trackSpeed = cmdJson["tr"][1].as<float>();
         bool reverseDir = cmdJson["tr"][2].as<bool>();
 
+        //If user ask to activate reverse solenoide
         if(reverseDir){
           // If the track speed is not null, decrease the speed before changing direction.
           if(tracksSpeeds[trackId] > 0.0){
-            if(trackId < 2){
-              while(tracksSpeeds[trackId] > 0.0){
-                tracksSpeeds[trackId] -= 0.1;
-                StaticJsonDocument<256> responseJson;
-                JsonArray trackData = responseJson.createNestedArray("tr");
-                trackData.add(trackId);
-                trackData.add(tracksSpeeds[trackId]);
-                serializeJson(responseJson, Serial);
+            //If track to control is on channel 0 or 1
+            while(tracksSpeeds[trackId] > 0.0){
+              tracksSpeeds[trackId] -= 0.1;
+              StaticJsonDocument<256> responseJson;
+              JsonArray trackData = responseJson.createNestedArray("tr");
+              trackData.add(trackId);
+              trackData.add(tracksSpeeds[trackId]);
+              serializeJson(responseJson, Serial);
+              if(isBtConnected){
+                serializeJson(responseJson, bts);
+              }
+              if(trackId < 2){
                 float volume = (2/3) * tracksSpeeds[trackId];
                 volume0.setVolume(volume, trackId);
                 delay(250);
               }
-            }
-            else{
-              while(tracksSpeeds[trackId] > 0.0){
-                tracksSpeeds[trackId] -= 0.1;
-                StaticJsonDocument<256> responseJson;
-                JsonArray trackData = responseJson.createNestedArray("tr");
-                trackData.add(trackId);
-                trackData.add(tracksSpeeds[trackId]);
-                serializeJson(responseJson, Serial);
-                //serializeJson(responseJson, bts);
+              else{
                 float volume = (2/3) * tracksSpeeds[trackId];
                 volume1.setVolume(volume, trackId - 2);
                 delay(250);
@@ -77,7 +97,9 @@ void decodeCommand(String rawCommand){
             trackData.add(trackId);
             trackData.add(tracksSpeeds[trackId]);
             serializeJson(responseJson, Serial);
-            //serializeJson(responseJson, bts);
+            if(isBtConnected){
+              serializeJson(responseJson, bts);
+            }
             if(trackId < 2){
               float volume = (2/3) * tracksSpeeds[trackId];
               volume0.setVolume(volume, trackId);
@@ -112,7 +134,9 @@ void decodeCommand(String rawCommand){
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  bts.register_callback(btsCallback);
   bts.begin("MRBR-Lite");
+
 
   auto config0 = i2s0.defaultConfig(TX_MODE);
   config0.pin_bck = 14;
@@ -126,6 +150,9 @@ void setup() {
   i2s1.begin(config1);  
 
   sineWave.begin(2, 44100, 50.0);
+
+  volume0.setVolume(0.0);
+  volume1.setVolume(0.0);
 }
 
 void loop() {
