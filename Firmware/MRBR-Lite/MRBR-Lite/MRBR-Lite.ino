@@ -2,6 +2,10 @@
 #include <AudioTools.h>
 #include <ArduinoJson.h>
 
+#define HW_VERSION "1.0.0"
+#define SW_VERSION "2.0.0"
+#define HW_TYPE "MRBR-(SN)"
+
 BluetoothSerial bts;
 I2SStream i2s0;
 I2SStream i2s1;
@@ -118,6 +122,21 @@ void decodeCommand(String rawCommand){
         int switchId = cmdJson["sw"][0];
         int switchPos = cmdJson["sw"][1];
       }
+      else if(cmdJson.containsKey("inf")){
+        String filter = cmdJson["inf"];
+        if(filter == "all"){
+          StaticJsonDocument<256> infoJson;
+
+          infoJson["inf"]["hw_version"] = HW_VERSION;
+          infoJson["inf"]["sw_version"] = SW_VERSION;
+          infoJson["inf"]["hw_type"] = HW_TYPE;
+
+          serializeJson(infoJson, Serial); 
+          if(isBtConnected){
+            serializeJson(infoJson, bts);
+          }
+        }
+      }
       break;
     case DeserializationError::InvalidInput:
       Serial.print(F("Invalid input!"));
@@ -139,17 +158,21 @@ void setup() {
 
 
   auto config0 = i2s0.defaultConfig(TX_MODE);
-  config0.pin_bck = 14;
-  config0.pin_ws = 15;
-  config0.pin_data = 16;
+  config0.pin_bck = 16;
+  config0.pin_ws = 17;
+  config0.pin_data = 4;
+  config0.bits_per_sample = 32;
+  config0.sample_rate = 48000;
   i2s0.begin(config0);  
   auto config1 = i2s1.defaultConfig(TX_MODE);
-  config1.pin_bck = 14;
+  config1.pin_bck = 16;
   config1.pin_ws = 12;
   config1.pin_data = 13;
+  config1.bits_per_sample = 32;
+  config1.sample_rate = 48000;
   i2s1.begin(config1);  
 
-  sineWave.begin(2, 44100, 50.0);
+  sineWave.begin(2, 48000, 50.0);
 
   volume0.setVolume(0.0);
   volume1.setVolume(0.0);
