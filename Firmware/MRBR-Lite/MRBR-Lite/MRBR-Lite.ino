@@ -1,3 +1,19 @@
+/*
+  This is the firmware for MRBR - Standalone Node
+  This firmware is designed to be use on MRBR-Nodes
+  without the usage of the Nuclueus (Only the Nodes
+  and A-Nodes).
+
+  The Master Node and its peripherals are 
+  interconnected via an I2C bus.
+  Up to 126 devices could be configured on the bus
+  as 2 addresses are reserved :
+  - Address 0 is the address of the master,
+  - Address 127 is the broadcast address use by
+  the peripherals to ask to the master for an 
+  address.
+*/
+
 #include <BluetoothSerial.h>
 #include <AudioTools.h>
 #include <ArduinoJson.h>
