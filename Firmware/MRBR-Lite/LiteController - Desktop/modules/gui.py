@@ -43,8 +43,11 @@ class Gui(customtkinter.CTk):
         self.track_buttons.grid(row=0, column=0, padx=10, pady=5)
         self.track_buttons.set(1)
         
-        self.throttle_control = customtkinter.CTkSlider(master=self.controller_frame, orientation="vertical")
+        self.throttle_control = customtkinter.CTkSlider(master=self.controller_frame, orientation="vertical",)
         self.throttle_control.grid(row=1, column=0, padx=10, pady=5)
+        
+        self.dir_control = customtkinter.CTkSegmentedButton(master=self.controller_frame, values=["←","→"], selected_color="#1f1c1c", unselected_color="#b5b3b3", fg_color="#ffffff")
+        self.dir_control.grid(row=2, column=0, padx=10, pady=5)
 
     def onSelectedPortChanged(self, value):
         pass
