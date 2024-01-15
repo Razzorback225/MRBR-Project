@@ -24,13 +24,13 @@
 
 BluetoothSerial bts;
 I2SStream i2s0;
-I2SStream i2s1;
+//I2SStream i2s1;
 VolumeStream volume0(i2s0);
-VolumeStream volume1(i2s1);
-SineWaveGenerator<int32_t> sineWave(32000);            
-GeneratedSoundStream<int32_t> sound(sineWave);
+//VolumeStream volume1(i2s1);
+SineWaveGenerator<int16_t> sineWave(32000);            
+GeneratedSoundStream<int16_t> sound(sineWave);
 StreamCopy copier0(volume0, sound);
-StreamCopy copier1(volume1, sound);
+//StreamCopy copier1(volume1, sound);
 
 bool isBtConnected = false;
 float tracksSpeeds[4] = {0.0,0.0,0.0,0.0};
@@ -89,11 +89,11 @@ void decodeCommand(String rawCommand){
                 volume0.setVolume(volume, trackId);
                 delay(250);
               }
-              else{
+              /*else{
                 float volume = (2/3) * tracksSpeeds[trackId];
                 volume1.setVolume(volume, trackId - 2);
                 delay(250);
-              }
+              }*/
             }
           }
           // Switch direction
@@ -102,11 +102,11 @@ void decodeCommand(String rawCommand){
             delay(500);
             volume0.setVolume(0.0, trackId);
           }
-          else{
+          /*else{
             volume1.setVolume(1.0, trackId - 2);
             delay(500);
             volume1.setVolume(0.0, trackId - 2);
-          }
+          }*/
 
         }
         else{
@@ -124,10 +124,10 @@ void decodeCommand(String rawCommand){
               float volume = (2/3) * tracksSpeeds[trackId];
               volume0.setVolume(volume, trackId);
             }
-            else{
+            /*else{
               float volume = (2/3) * tracksSpeeds[trackId];
               volume1.setVolume(volume, trackId - 2);
-            }
+            }*/
           }
           else{
 
@@ -177,27 +177,33 @@ void setup() {
   config0.pin_bck = 16;
   config0.pin_ws = 17;
   config0.pin_data = 4;
-  config0.bits_per_sample = 32;
-  config0.sample_rate = 48000;
+  config0.bits_per_sample = 16;
+  config0.channels = 2;
+  config0.sample_rate = 44100;
   i2s0.begin(config0);  
-  auto config1 = i2s1.defaultConfig(TX_MODE);
+  auto config00 = volume0.defaultConfig();
+  config00.bits_per_sample = 16;
+  config00.channels = 2;
+  config00.sample_rate = 44100;
+  volume0.begin(config00);
+  /*auto config1 = i2s1.defaultConfig(TX_MODE);
   config1.pin_bck = 16;
   config1.pin_ws = 12;
   config1.pin_data = 13;
   config1.bits_per_sample = 32;
   config1.sample_rate = 48000;
-  i2s1.begin(config1);  
+  i2s1.begin(config1);*/  
 
-  sineWave.begin(2, 48000, 50.0);
+  sineWave.begin(2, 44100, 50.0);
 
   volume0.setVolume(0.0);
-  volume1.setVolume(0.0);
+  //volume1.setVolume(0.0);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
   copier0.copy();
-  copier1.copy();
+  //copier1.copy();
 
   if(Serial.available() > 0){
     String rawCommand = Serial.readStringUntil('/n');
